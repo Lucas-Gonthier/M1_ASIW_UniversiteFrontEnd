@@ -23,8 +23,9 @@ const closeForm = () => {
     currentParcours.value = new Parcours(null, null, null);
 };
 
+const emit = defineEmits(['create:parcours', 'update:parcours']); 
+
 const saveParcours = () => { 
-  console.log('Saving parcours:', currentParcours.value);
   if (formErrors.value.nomParcours || formErrors.value.anneeFormation) {
 
     return; 
@@ -41,6 +42,7 @@ const saveParcours = () => {
 
       closeForm(); 
 
+      emit('update:parcours', currentParcours);
     }).catch((ex) => { 
 
       alert(ex.message); 
@@ -54,6 +56,8 @@ const saveParcours = () => {
       alert('Parcours créé avec succès'); 
 
       closeForm(); 
+
+      emit('create:parcours', currentParcours);
 
     }).catch((ex) => { 
 

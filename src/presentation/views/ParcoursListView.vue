@@ -25,7 +25,7 @@ const formatterSuppression = (parcours: Parcours) => {
 
 const columns = [ 
 
-  { field: 'editionParcours', label: 'Edition', formatter: formatterEdition, onClick: (p: Parcours) => { parcoursForm.value?.openForm(p) } }, 
+  { field: 'editionParcours', label: 'Edition', formatter: formatterEdition, onClick: (p: Parcours) => { parcoursForm.value?.openForm(p) }, style: 'width: 32px;text-align:center;' }, 
 
   { field: 'id', label: 'ID', formatter: null, onClick: null }, 
 
@@ -33,7 +33,7 @@ const columns = [
 
   { field: 'anneeFormation', label: 'Année', formatter: null, onClick: null },
 
-  { field: 'deleteParcours', label: 'Suppression', formatter: formatterSuppression, onClick: () => { } },
+  { field: 'deleteParcours', label: 'Suppression', formatter: formatterSuppression, onClick: () => { }, style: 'width: 32px;text-align:center;' },
 
 ]; 
 
@@ -45,7 +45,22 @@ onMounted(() => {
 
   }); 
 
-}); 
+});
+
+const onParcoursCreated = (newParcours: Parcours) => { 
+
+  parcours.value.unshift(newParcours); 
+
+};
+
+const onParcoursUpdated = (updatedParcours: Parcours) => { 
+
+  const index = parcours.value.findIndex(p => p.id === updatedParcours.id);
+  if (index !== -1) {
+    parcours.value[index] = updatedParcours;
+  }
+
+};
 </script>
 
 <template> 
@@ -80,6 +95,6 @@ onMounted(() => {
 
     </div> 
 
-    <ParcoursForm ref="parcoursForm" :parcours="null" /> 
+    <ParcoursForm ref="parcoursForm" @create:parcours="onParcoursCreated" @update:parcours="onParcoursUpdated" />
 
 </template> 

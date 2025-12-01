@@ -17,8 +17,8 @@ export class ParcoursDAO implements IDAO<Parcours> {
 
     public async create(data: Parcours): Promise<Parcours> { 
     try { 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/Parcours`, data); 
-      return response.data; 
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/parcours`, data); 
+      return response.data;
     } catch (error) { 
       throw new Error('Impossible de créer le nouveau parcours'); 
     } 
@@ -26,12 +26,17 @@ export class ParcoursDAO implements IDAO<Parcours> {
   
   public async get(id: number): Promise<Parcours> { 
     // Retrieve a Parcours document from the database 
-    return { id: id, nomParcours: 'Parcours 1', anneeFormation: 2024 }; 
+    try { 
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/parcours/${id}`); 
+      return response.data;
+    } catch (error) { 
+      throw new Error('Impossible de créer le nouveau parcours'); 
+    } 
   } 
  
   public async update(id: number, data: Parcours): Promise<Parcours> { 
     try { 
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/Parcours/${id}`, data); 
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/parcours/${id}`, data); 
       return response.data; 
     } catch (error) { 
       throw new Error('Impossible de mettre à jour le parcours'); 
@@ -44,16 +49,10 @@ export class ParcoursDAO implements IDAO<Parcours> {
  
   public async list(): Promise<Parcours[]> { 
     try { 
-      //const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/Parcours`); 
-      //return response.data;
-      return [
-        { id: 1, nomParcours: 'Informatique', anneeFormation: 2024 },
-        { id: 2, nomParcours: 'Mathématiques', anneeFormation: 2024 },
-        { id: 3, nomParcours: 'Physique', anneeFormation: 2024 },
-      ];
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/parcours`); 
+      return response.data;
     } catch (error) {
       throw new Error('Impossible de récupérer la liste des parcours');
     } 
-    
   } 
 } 
