@@ -30,7 +30,7 @@ export class ParcoursDAO implements IDAO<Parcours> {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/parcours/${id}`); 
       return response.data;
     } catch (error) { 
-      throw new Error('Impossible de créer le nouveau parcours'); 
+      throw new Error('Impossible de récupérer le parcours'); 
     } 
   } 
  
@@ -44,7 +44,12 @@ export class ParcoursDAO implements IDAO<Parcours> {
   } 
 
   public async delete(id: number): Promise<void> { 
-    // Delete a Parcours document from the database 
+    try { 
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/parcours/${id}`); 
+      return response.data; 
+    } catch (error) { 
+      throw new Error('Impossible de supprimer le parcours'); 
+    }
   } 
  
   public async list(): Promise<Parcours[]> { 

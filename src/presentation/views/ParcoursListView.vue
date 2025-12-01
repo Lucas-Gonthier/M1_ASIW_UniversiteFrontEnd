@@ -5,7 +5,8 @@ import CustomButton from '@/presentation/components/forms/components/CustomButto
 import ParcoursForm from '@/presentation/components/forms/ParcoursForm.vue'; 
 import CustomTable from '../components/tables/CustomTable.vue'; 
 import { Parcours } from '@/domain/entities/Parcours'; 
-import { ParcoursDAO } from '@/domain/daos/ParcoursDAO'; 
+import { ParcoursDAO } from '@/domain/daos/ParcoursDAO';
+import Swal from 'sweetalert2';  
 
 const parcoursForm = ref<typeof ParcoursForm | null>(null); 
 
@@ -23,30 +24,6 @@ const formatterSuppression = (parcours: Parcours) => {
 
 };
 
-const columns = [ 
-
-  { field: 'editionParcours', label: 'Edition', formatter: formatterEdition, onClick: (p: Parcours) => { parcoursForm.value?.openForm(p) }, style: 'width: 32px;text-align:center;' }, 
-
-  { field: 'id', label: 'ID', formatter: null, onClick: null }, 
-
-  { field: 'nomParcours', label: 'Intitulé', formatter: null, onClick: null }, 
-
-  { field: 'anneeFormation', label: 'Année', formatter: null, onClick: null },
-
-  { field: 'deleteParcours', label: 'Suppression', formatter: formatterSuppression, onClick: () => { }, style: 'width: 32px;text-align:center;' },
-
-]; 
-
-onMounted(() => { 
-
-  ParcoursDAO.getInstance().list().then((data) => { 
-
-    parcours.value = data; 
-
-  }); 
-
-});
-
 const onParcoursCreated = (newParcours: Parcours) => { 
 
   parcours.value.unshift(newParcours); 
@@ -61,6 +38,62 @@ const onParcoursUpdated = (updatedParcours: Parcours) => {
   }
 
 };
+
+const onDeleteParcours = (p: Parcours) => { 
+
+  Swal.fire({ 
+
+    title: 'Êtes-vous sûr de vouloir supprimer ce parcours ?', 
+
+    showCancelButton: true, 
+
+    confirmButtonText: 'Supprimer', 
+
+    cancelButtonText: 'Annuler', 
+
+  }).then((result) => { 
+
+    if (result.isConfirmed) { 
+
+      ParcoursDAO.getInstance().delete(p.id!).then(() => { 
+
+        parcours.value = parcours.value.filter((parcours) => parcours.id !== p.id); 
+
+      }).catch(() => { 
+
+        alert('Une erreur est survenue lors de la suppression du parcours'); 
+
+      }); 
+
+    } 
+
+  }) 
+
+} 
+
+const columns = [ 
+
+  { field: 'editionParcours', label: 'Edition', formatter: formatterEdition, onClick: (p: Parcours) => { parcoursForm.value?.openForm(p) }, style: 'width: 32px;text-align:center;' }, 
+
+  { field: 'id', label: 'ID', formatter: null, onClick: null }, 
+
+  { field: 'nomParcours', label: 'Intitulé', formatter: null, onClick: null }, 
+
+  { field: 'anneeFormation', label: 'Année', formatter: null, onClick: null },
+
+  { field: 'deleteParcours', label: 'Suppression', formatter: formatterSuppression, onClick: onDeleteParcours, style: 'width: 32px;text-align:center;' },
+
+]; 
+
+onMounted(() => { 
+
+  ParcoursDAO.getInstance().list().then((data) => { 
+
+    parcours.value = data; 
+
+  }); 
+
+});
 </script>
 
 <template> 
