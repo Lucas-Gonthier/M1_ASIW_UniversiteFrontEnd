@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, defineExpose, defineProps, toRaw } from 'vue';
+import { ref, onBeforeMount, toRaw, watch } from 'vue';
 import { BootstrapButtonEnum } from '@/types/BootstrapButtonEnum';
 import { Parcours } from '@/domain/entities/Parcours';
 import CustomInput from '@/presentation/components/forms/components/CustomInput.vue';
 import CustomButton from '@/presentation/components/forms/components/CustomButton.vue';
 import { ParcoursDAO } from '@/domain/daos/ParcoursDAO'; 
-import { watch } from 'vue';
+import CustomModal from '@/presentation/components/modals/CustomModal.vue'; 
 
 const currentParcours = ref<Parcours>(new Parcours(null, null, null));
 const isOpen = ref(false);
@@ -32,17 +32,16 @@ const saveParcours = () => {
 
   } 
 
- 
-
   if (currentParcours.value.id) { 
 
     ParcoursDAO.getInstance().update(currentParcours.value.id, currentParcours.value).then(() => { 
 
       alert('Parcours modifié avec succès'); 
-
+      
+      emit('update:parcours', currentParcours.value);
+      
       closeForm(); 
 
-      emit('update:parcours', currentParcours);
     }).catch((ex) => { 
 
       alert(ex.message); 
@@ -53,11 +52,11 @@ const saveParcours = () => {
 
     ParcoursDAO.getInstance().create(currentParcours.value).then(() => { 
 
-      alert('Parcours créé avec succès'); 
+      alert('Parcours créé avec succès');
+      
+      emit('create:parcours', currentParcours.value);
 
       closeForm(); 
-
-      emit('create:parcours', currentParcours);
 
     }).catch((ex) => { 
 
@@ -131,32 +130,52 @@ defineExpose({
 });
 </script>
 
-<template>
-    <div v-if="isOpen" class="custom-modal">
-        <div class="card new-parcours">
-            <div class="card-header" style="background: #273656">
-                <template v-if="parcours && parcours.id"> Modification du parcours </template>
-                <template v-else> Nouveau parcours </template>
-            </div>
-            <div class="card-body">
-                <div class="card-text mt-1 mb-1">
-                    <form>
-                        <CustomInput v-model="currentParcours.nomParcours" id="intitule" libelle="Intitulé" type="text" placeholder="Intitulé du parcours" :error="formErrors.nomParcours" />
-                        <CustomInput v-model="currentParcours.anneeFormation" class="mt-2" id="annee" libelle="Année" type="number" placeholder="Année de formation" :error="formErrors.anneeFormation" />
-                    </form>
-                </div>
-                <CustomButton class="mt-1" style="margin-left: 5px" :color="BootstrapButtonEnum.danger"
-                    @click="closeForm">
-                    Annuler
-                </CustomButton>
-                <CustomButton class="mt-1" style="margin-left: 5px" :color="BootstrapButtonEnum.primary"
-                    @click="saveParcours">
-                    Enregistrer
-                </CustomButton>
-            </div>
-        </div>
-    </div>
-</template>
+<template> 
+
+  <CustomModal :isOpen="isOpen"> 
+
+    <template v-slot:title> 
+
+      <template v-if="parcours && parcours.id"> Modification du parcours </template> 
+
+      <template v-else> Nouveau parcours </template> 
+
+    </template> 
+
+    <template v-slot:body> 
+
+      <div class="text-start mt-1 mb-1"> 
+
+        <form> 
+
+          <CustomInput v-model="currentParcours.nomParcours" id="intitule" libelle="Intitulé" type="text" 
+
+            placeholder="Intitulé du parcours" :error="formErrors.nomParcours" /> 
+
+          <CustomInput v-model.number="currentParcours.anneeFormation" class="mt-2" id="annee" libelle="Année" type="number"
+            placeholder="Année de formation" :error="formErrors.anneeFormation" /> 
+
+        </form> 
+
+      </div> 
+
+      <CustomButton class="mt-1" style="margin-left: 5px" :color="BootstrapButtonEnum.danger" @click="closeForm"> 
+
+        Annuler 
+
+      </CustomButton> 
+
+      <CustomButton class="mt-1" style="margin-left: 5px" :color="BootstrapButtonEnum.primary" @click="saveParcours"> 
+
+        Enregistrer 
+
+      </CustomButton> 
+
+    </template> 
+
+  </CustomModal> 
+
+</template> 
 
 <style scoped> 
 .custom-modal { 

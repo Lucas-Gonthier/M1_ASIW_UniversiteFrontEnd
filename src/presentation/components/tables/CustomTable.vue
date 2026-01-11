@@ -8,7 +8,7 @@ defineProps<{
 
     idAttribute: string, 
 
-    columns: { field: string, label: string, formatter: Function | null, onClick: Function | null }[], 
+    columns: { field: string, label: string, formatter: Function | null, onClick: Function | null, style: string }[], 
 
     data: any[] 
 
@@ -38,7 +38,7 @@ defineProps<{
 
             <tr v-for="item in data" :key="item[idAttribute]"> 
 
-                <td v-for="column in columns" :key="column.field" 
+                <td v-for="column in columns" :key="column.field" :style="column.style" 
 
                     @click="column.onClick ? column.onClick(item) : () => { }"> 
 

@@ -16,7 +16,7 @@ const props = defineProps<{
 
     <label for="intitule">{{ libelle }} :</label> 
 
-    <input v-model="model" :class="{ 'form-control': true, 'is-invalid': error }" :type="type" :id="id" 
+    <input v-model="model" :class="{ 'form-control': true, 'is-invalid': error }" :type="type" :id="id"
 
       :placeholder="placeholder" /> 
 

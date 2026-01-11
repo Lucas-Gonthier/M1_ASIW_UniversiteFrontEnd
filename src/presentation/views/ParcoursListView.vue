@@ -75,11 +75,11 @@ const columns = [
 
   { field: 'editionParcours', label: 'Edition', formatter: formatterEdition, onClick: (p: Parcours) => { parcoursForm.value?.openForm(p) }, style: 'width: 32px;text-align:center;' }, 
 
-  { field: 'id', label: 'ID', formatter: null, onClick: null }, 
+  { field: 'id', label: 'ID', formatter: null, onClick: null, style: '' }, 
 
-  { field: 'nomParcours', label: 'Intitulé', formatter: null, onClick: null }, 
+  { field: 'nomParcours', label: 'Intitulé', formatter: null, onClick: null, style: '' }, 
 
-  { field: 'anneeFormation', label: 'Année', formatter: null, onClick: null },
+  { field: 'anneeFormation', label: 'Année', formatter: null, onClick: null, style: '' },
 
   { field: 'deleteParcours', label: 'Suppression', formatter: formatterSuppression, onClick: onDeleteParcours, style: 'width: 32px;text-align:center;' },
 
@@ -120,7 +120,7 @@ onMounted(() => {
 
         <div class="card-body"> 
 
-          <CustomTable idAttribute="ID" :columns="columns" :data="parcours" /> 
+          <CustomTable idAttribute="id" :columns="columns" :data="parcours" /> 
 
         </div> 
 

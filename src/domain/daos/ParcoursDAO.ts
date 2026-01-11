@@ -1,4 +1,5 @@
 import type { Parcours } from '../entities/Parcours'; 
+import { Parcours as ParcoursClass } from '../entities/Parcours';
 import type { IDAO } from '../IDAO';
 import axios from 'axios'; 
 
@@ -13,12 +14,20 @@ export class ParcoursDAO implements IDAO<Parcours> {
       ParcoursDAO.instance = new ParcoursDAO(); 
     } 
     return ParcoursDAO.instance; 
-  } 
+  }
 
-    public async create(data: Parcours): Promise<Parcours> { 
+  private normalizeParcours(data: any): Parcours {
+    return new ParcoursClass(
+      data.id || data.Id,
+      data.nomParcours || data.NomParcours,
+      data.anneeFormation || data.AnneeFormation
+    );
+  }
+
+  public async create(data: Parcours): Promise<Parcours> { 
     try { 
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/parcours`, data); 
-      return response.data;
+      return this.normalizeParcours(response.data);
     } catch (error) { 
       throw new Error('Impossible de créer le nouveau parcours'); 
     } 
@@ -28,7 +37,7 @@ export class ParcoursDAO implements IDAO<Parcours> {
     // Retrieve a Parcours document from the database 
     try { 
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/parcours/${id}`); 
-      return response.data;
+      return this.normalizeParcours(response.data);
     } catch (error) { 
       throw new Error('Impossible de récupérer le parcours'); 
     } 
@@ -37,7 +46,7 @@ export class ParcoursDAO implements IDAO<Parcours> {
   public async update(id: number, data: Parcours): Promise<Parcours> { 
     try { 
       const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/parcours/${id}`, data); 
-      return response.data; 
+      return this.normalizeParcours(response.data);
     } catch (error) { 
       throw new Error('Impossible de mettre à jour le parcours'); 
     }
@@ -55,7 +64,7 @@ export class ParcoursDAO implements IDAO<Parcours> {
   public async list(): Promise<Parcours[]> { 
     try { 
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/parcours`); 
-      return response.data;
+      return response.data.map((item: any) => this.normalizeParcours(item));
     } catch (error) {
       throw new Error('Impossible de récupérer la liste des parcours');
     } 
