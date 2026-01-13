@@ -13,6 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@kyvg/vue3-notification": "^3.4.2",
     "@popperjs/core": "^2.11.8",
     "@types/vue-select": "^3.16.8",
     "axios": "^1.13.1",

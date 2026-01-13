@@ -34,11 +34,11 @@ const saveParcours = () => {
 
   if (currentParcours.value.id) { 
 
-    ParcoursDAO.getInstance().update(currentParcours.value.id, currentParcours.value).then(() => { 
+    ParcoursDAO.getInstance().update(currentParcours.value.id, currentParcours.value).then((updatedParcours) => { 
 
       alert('Parcours modifié avec succès'); 
       
-      emit('update:parcours', currentParcours.value);
+      emit('update:parcours', updatedParcours);
       
       closeForm(); 
 
@@ -50,12 +50,11 @@ const saveParcours = () => {
 
   } else { 
 
-    ParcoursDAO.getInstance().create(currentParcours.value).then(() => { 
+    ParcoursDAO.getInstance().create(currentParcours.value).then((newParcours) => { 
 
       alert('Parcours créé avec succès');
-      
-      emit('create:parcours', currentParcours.value);
 
+      emit('create:parcours', newParcours);
       closeForm(); 
 
     }).catch((ex) => { 

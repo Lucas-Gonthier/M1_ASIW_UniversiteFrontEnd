@@ -27,7 +27,7 @@ const formatterSuppression = (parcours: Parcours) => {
 const onParcoursCreated = (newParcours: Parcours) => { 
 
   parcours.value.unshift(newParcours); 
-
+  console.log('Parcours créé:', newParcours);
 };
 
 const onParcoursUpdated = (updatedParcours: Parcours) => { 

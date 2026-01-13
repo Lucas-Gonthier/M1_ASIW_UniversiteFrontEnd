@@ -26,6 +26,7 @@ const formErrors = ref<{
 const parcoursOptions = ref<Parcours[]>([]);
 
 const openForm = (etudiant: Etudiant | null = null) => {
+    console.log('Opening form with etudiant:', etudiant);
     isOpen.value = true;
     if (etudiant) {
         currentEtudiant.value = structuredClone(toRaw(etudiant));
@@ -45,7 +46,7 @@ const saveEtudiant = () => {
     if (currentEtudiant.value.id) {
         // update existing etudiant
         EtudiantDAO.getInstance()
-            .update(currentEtudiant.value.id, currentEtudiant.value as any)
+            .update(currentEtudiant.value.id, currentEtudiant.value)
             .then((updated) => {
                 alert('Étudiant modifié avec succès');
                 emit('update:etudiant', updated);
@@ -55,8 +56,9 @@ const saveEtudiant = () => {
                 alert(ex.message || ex);
             });
     } else {
+        console.log('new Etudiant', currentEtudiant.value);
         EtudiantDAO.getInstance()
-            .create(currentEtudiant.value as any)
+            .create(currentEtudiant.value)
             .then((newEtudiant) => {
                 alert('Étudiant créé avec succès');
                 emit('create:etudiant', newEtudiant);

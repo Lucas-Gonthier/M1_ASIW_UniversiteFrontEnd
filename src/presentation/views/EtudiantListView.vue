@@ -55,7 +55,7 @@ const columns = [
   { field: 'nom', label: 'Nom', formatter: null, onClick: null, style: '' },
   { field: 'prenom', label: 'Prénom', formatter: null, onClick: null, style: '' },
   { field: 'email', label: 'Email', formatter: null, onClick: null, style: '' },
-  { field: 'parcours', label: 'Parcours', formatter: (e: Etudiant) => e.parcours?.nomParcours || '-', onClick: null, style: '' },
+  { field: 'nomParcours', label: 'Parcours', formatter: (e: Etudiant) => e.parcours?.nomParcours || '-', onClick: null, style: '' },
   { field: 'deleteEtudiant', label: 'Suppression', formatter: formatterSuppression, onClick: onDeleteEtudiant, style: 'width: 32px;text-align:center;' },
 ];
 

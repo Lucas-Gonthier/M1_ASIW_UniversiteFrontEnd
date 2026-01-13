@@ -17,21 +17,49 @@ export class EtudiantDAO implements IDAO<Etudiant> {
   }
 
   private normalizeEtudiant(data: any): Etudiant {
-    return new EtudiantClass(
-      data.id || data.Id,
-      data.nom || data.Nom,
-      data.prenom || data.Prenom,
-      data.email || data.Email,
-      data.parcours || data.Parcours
-    );
+  const id = data.id ?? data.ID ?? null;
+  const nom = data.nom ?? data.Nom ?? null;
+  const prenom = data.prenom ?? data.Prenom ?? null;
+  const email = data.email ?? data.Email ?? null;
+
+  let parcours = null;
+
+  if (data.parcours || data.Parcours) {
+    const p = data.parcours ?? data.Parcours;
+
+    parcours = {
+      id: p.id ?? p.ID ?? null,
+      nomParcours: p.nomParcours ?? p.NomParcours ?? null,
+      anneeFormation: p.anneeFormation ?? p.AnneeFormation ?? null
+    };
   }
+
+  return new EtudiantClass(
+    id,
+    nom,
+    prenom,
+    email,
+    parcours
+  );
+}
 
   public async create(data: Etudiant): Promise<Etudiant> {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/etudiants`, data);
-      return this.normalizeEtudiant(response.data);
+      const payload = {
+        nom: data.nom,
+        prenom: data.prenom,
+        email: data.email,
+        parcours: {
+          id: data.parcours?.id || null,
+          nomParcours: data.parcours?.nomParcours || null,
+          anneeFormation: data.parcours?.anneeFormation || null
+        }
+      };
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/etudiants`, payload);
+      const responseData = response.data.etudiant || response.data;
+      return this.normalizeEtudiant(responseData);
     } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || "Impossible de créer le nouvel étudiant";
+      const msg = error?.response?.data?.error || error?.response?.data?.message || error?.message || "Impossible de créer le nouvel étudiant";
       throw new Error(msg);
     }
   }
@@ -47,10 +75,23 @@ export class EtudiantDAO implements IDAO<Etudiant> {
 
   public async update(id: number, data: Etudiant): Promise<Etudiant> {
     try {
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/etudiants/${id}`, data);
-      return this.normalizeEtudiant(response.data);
-    } catch (error) {
-      throw new Error("Impossible de mettre à jour l'étudiant");
+      const payload = {
+        nom: data.nom,
+        prenom: data.prenom,
+        email: data.email,
+        parcours: {
+          id: data.parcours?.id || null,
+          nomParcours: data.parcours?.nomParcours || null,
+          anneeFormation: data.parcours?.anneeFormation || null
+        }
+      };
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/etudiants/${id}`, payload);
+      const responseData = response.data.etudiant || response.data;
+      console.log('Response data from update:', responseData);
+      return this.normalizeEtudiant(responseData);
+    } catch (error: any) {
+      const msg = error?.response?.data?.error || error?.response?.data?.message || error?.message || "Impossible de mettre à jour l'étudiant";
+      throw new Error(msg);
     }
   }
 

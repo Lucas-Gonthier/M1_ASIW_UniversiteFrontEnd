@@ -1,3 +1,4 @@
+import type { Etudiant } from '../entities/Etudiant';
 import type { Parcours } from '../entities/Parcours'; 
 import { Parcours as ParcoursClass } from '../entities/Parcours';
 import type { IDAO } from '../IDAO';
@@ -26,7 +27,7 @@ export class ParcoursDAO implements IDAO<Parcours> {
 
   public async create(data: Parcours): Promise<Parcours> { 
     try { 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/parcours`, data); 
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/parcours`, data);
       return this.normalizeParcours(response.data);
     } catch (error) { 
       throw new Error('Impossible de créer le nouveau parcours'); 
@@ -64,7 +65,9 @@ export class ParcoursDAO implements IDAO<Parcours> {
   public async list(): Promise<Parcours[]> { 
     try { 
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/parcours`); 
-      return response.data.map((item: any) => this.normalizeParcours(item));
+      return response.data
+              .map((item: any) => this.normalizeParcours(item))
+              .sort((a: Parcours, b: Parcours) => (a.id || 0) - (b.id || 0));
     } catch (error) {
       throw new Error('Impossible de récupérer la liste des parcours');
     } 

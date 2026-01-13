@@ -34,11 +34,7 @@ const formErrors = ref<{
     parcours: null,
 });
 
- 
-
 const parcoursOptions = ref<Parcours[]>([]); 
-
- 
 
 const openForm = (ue: UE | null = null) => { 
 
@@ -90,6 +86,7 @@ const saveUE = () => {
             .then((newUE) => {
                 alert('UE créée avec succès');
                 emit('create:ue', newUE);
+                console.log('Nouvelle UE:', newUE);
                 closeForm();
             })
             .catch((ex: any) => {

@@ -29,6 +29,7 @@ export class UeDAO implements IDAO<UE> {
     try {
       // backend endpoints for UEs use /api/ues (plural) for consistency
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/ues`, data);
+      console.log('Données UE récupérées:', response.data);
       return this.normalizeUE(response.data);
     } catch (error: any) {
       const msg = error?.response?.data?.message || error?.message || "Impossible de créer la nouvelle UE";
@@ -39,12 +40,21 @@ export class UeDAO implements IDAO<UE> {
   public async get(id: number): Promise<UE> { 
     // Retrieve a UE document from the database 
     try { 
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/ues/${id}`); 
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/ues/${id}`);
       return this.normalizeUE(response.data);
     } catch (error) { 
       throw new Error("Impossible de récupérer l'UE"); 
     } 
   } 
+
+  public async getUEWithParcours(id: number): Promise<UE> {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/ues/${id}/parcours`);
+      return this.normalizeUE(response.data);
+    } catch (error) {
+      throw new Error("Impossible de récupérer l'UE avec ses parcours");
+    }
+  }
  
   public async update(id: number, data: UE): Promise<UE> { 
     try { 
@@ -54,6 +64,24 @@ export class UeDAO implements IDAO<UE> {
       throw new Error("Impossible de mettre à jour l'UE"); 
     }
   } 
+
+  public async addParcoursUE(id: number, parcoursId: number): Promise<UE> {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/ues/${id}/parcours/${parcoursId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Impossible de mettre à jour le parcours de l'UE");
+    }
+  }
+
+  public async removeParcoursUE(id: number, parcoursId: number): Promise<UE> {
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/ues/${id}/parcours/${parcoursId}`);
+      return response.data;;
+    } catch (error) {
+      throw new Error("Impossible de supprimer le parcours de l'UE");
+    }
+  }
 
   public async delete(id: number): Promise<void> { 
     try { 
